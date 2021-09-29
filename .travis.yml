@@ -44,7 +44,7 @@ jobs:
         - docker buildx inspect --bootstrap
       script:
         - docker login -u ajv21 -p Jun21@2021
-        - travis_wait 30 docker buildx build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t ajv21/docker-azcopy:$TRAVIS_COMMIT --platform linux/amd64,linux/arm64 --push . >> test.txt || tail -n 10 test.txt
+        - travis_wait 30 docker buildx build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t ajv21/docker-azcopy:$TRAVIS_COMMIT --platform linux/amd64,linux/arm64 --push . 2> test.txt || tail -n 10 test.txt
         - docker buildx rm mybuilder
       after_success:
         - docker run --rm ajv21/docker-azcopy:$TRAVIS_COMMIT azcopy --version 
