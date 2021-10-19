@@ -65,7 +65,6 @@ jobs:
       arch: arm64
       language: minimal
       before_script:
-        - sudo apt-get upgrade
         - sudo apt-get update
         - sudo apt-get install jq
         - LATEST_AZCOPY="$(curl -sLo- https://api.github.com/repos/Azure/azure-storage-azcopy/releases | jq -r '.[0].tag_name' | sed 's/^v//g')"
