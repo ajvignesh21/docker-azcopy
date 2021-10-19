@@ -5,24 +5,20 @@ dist: focal
 services:
   - docker
 
-arch:
-  - amd64
-  - arm64
-
 stages:
   - Static test
   - Build test
 
 jobs:
   include:
-    - stage: Static test
+    - stage: Static test-1-amd64
       env:
         - Test: hadolint
       language: minimal
       script:
         - docker run --rm -i -v $PWD/.hadolint.yml:/.hadolint.yml hadolint/hadolint < Dockerfile
 
-    - stage: Static test
+    - stage: Static test-2-amd64
       env:
         - Test: dockerfile_lint
       language: node_js
@@ -34,13 +30,45 @@ jobs:
         directories:
           - .npx
 
-    - stage: Build test
+    - stage: Build test-amd64
+      arch: amd64
       language: minimal
       before_script:
         - LATEST_AZCOPY="$(curl -sLo- https://api.github.com/repos/Azure/azure-storage-azcopy/releases | jq -r '.[0].tag_name' | sed 's/^v//g')"
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$TRAVIS_COMMIT .
+        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$TRAVIS_COMMIT-amd64 .
       after_success:
-        - docker run --rm docker-azcopy:$TRAVIS_COMMIT azcopy --version
+        - docker run --rm docker-azcopy:$TRAVIS_COMMIT-amd64 azcopy --version
+
+    - stage: Static test-1-arm64
+      env:
+        - Test: hadolint
+      language: minimal
+      script:
+        - docker run --rm -i -v $PWD/.hadolint.yml:/.hadolint.yml hadolint/hadolint < Dockerfile
+
+    - stage: Static test-2-arm64
+      env:
+        - Test: dockerfile_lint
+      language: node_js
+      node_js:
+        - "12"
+      script:
+        - npx --cache .npx dockerfile_lint
+      cache:
+        directories:
+          - .npx
+
+    - stage: Build test-arm64
+      arch: arm64
+      language: minimal
+      before_script:
+        - LATEST_AZCOPY="$(curl -sLo- https://api.github.com/repos/Azure/azure-storage-azcopy/releases | jq -r '.[0].tag_name' | sed 's/^v//g')"
+        - test -n "$LATEST_AZCOPY"
+        - export LATEST_AZCOPY
+      script:
+        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$TRAVIS_COMMIT-arm64 .
+      after_success:
+        - docker run --rm docker-azcopy:$TRAVIS_COMMIT-arm64 azcopy --version
