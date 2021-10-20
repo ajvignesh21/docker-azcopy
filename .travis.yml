@@ -79,7 +79,7 @@ deploy:
   provider: <provider>
   # ⋮
   on:
-    tags: true
+    tags: false
   script:
        - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
        - if [ "${TRAVIS_CPU_ARCH}" == "arm64" ]; then
