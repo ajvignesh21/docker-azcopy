@@ -38,7 +38,7 @@ jobs:
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:$TRAVIS_COMMIT -t $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:latest .
+        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:latest .
       after_success:
         - docker run --rm $DOCKER_USERNAME/docker-azcopy:latest azcopy --version
         
@@ -72,7 +72,7 @@ jobs:
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:$TRAVIS_COMMIT -t $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:latest-arm64 .
+        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY"-arm64 -t $DOCKER_USERNAME/docker-azcopy:latest-arm64 .
       after_success:
         - docker run --rm $DOCKER_USERNAME/docker-azcopy:latest-arm64 azcopy --version
 deploy:
@@ -83,7 +83,7 @@ deploy:
   script:
        - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
        - if [ "${TRAVIS_CPU_ARCH}" == "arm64" ]; then
-           docker push $DOCKER_USERNAME/docker-azcopy:$AZCOPY_VERSION-arm64 .
+           docker push $DOCKER_USERNAME/docker-azcopy:latest-arm64 .
          else
-           docker push $DOCKER_USERNAME/docker-azcopy:$AZCOPY_VERSION .
+           docker push $DOCKER_USERNAME/docker-azcopy:latest .
          fi
