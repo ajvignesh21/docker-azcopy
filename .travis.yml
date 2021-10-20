@@ -38,7 +38,7 @@ jobs:
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:$TRAVIS_COMMIT -t $DOCKER_USERNAME/docker-azcopy:$AZCOPY_VERSION .
+        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$TRAVIS_COMMIT -t $DOCKER_USERNAME/docker-azcopy:$AZCOPY_VERSION .
       after_success:
         - docker run --rm $DOCKER_USERNAME/docker-azcopy:$AZCOPY_VERSION azcopy --version
 
