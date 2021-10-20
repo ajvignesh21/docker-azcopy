@@ -38,9 +38,9 @@ jobs:
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t "$DOCKER_USERNAME"/docker-azcopy:$TRAVIS_COMMIT .
+        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$TRAVIS_COMMIT -t docker-azcopy:latest .
       after_success:
-        - docker run --rm docker-azcopy:latest azcopy --version
+        - docker run --rm docker-azcopy:$TRAVIS_COMMIT azcopy --version
 
     - stage: Static test-1-arm64
       env:
