@@ -11,14 +11,14 @@ stages:
 
 jobs:
   include:
-    - stage: Static test-1-amd64
+    - stage: Static test
       env:
         - Test: hadolint
       language: minimal
       script:
         - docker run --rm -i -v $PWD/.hadolint.yml:/.hadolint.yml hadolint/hadolint < Dockerfile
 
-    - stage: Static test-2-amd64
+    - stage: Static test
       env:
         - Test: dockerfile_lint
       language: node_js
@@ -42,25 +42,6 @@ jobs:
       after_success:
         - docker run --rm $DOCKER_USERNAME/docker-azcopy:latest azcopy --version
         
-    - stage: Static test-1-arm64
-      env:
-        - Test: hadolint
-      language: minimal
-      script:
-        - docker run --rm -i -v $PWD/.hadolint.yml:/.hadolint.yml hadolint/hadolint < Dockerfile
-        
-    - stage: Static test-2-arm64
-      env:
-        - Test: dockerfile_lint
-      language: node_js
-      node_js:
-        - "12"
-      script:
-        - npx --cache .npx dockerfile_lint
-      cache:
-        directories:
-          - .npx
-          
     - stage: Build test-arm64
       arch: arm64
       language: minimal
@@ -81,9 +62,10 @@ deploy:
   on:
     tags: true
   script:
+       - export LATEST_AZCOPY="$(curl -sLo- https://api.github.com/repos/Azure/azure-storage-azcopy/releases | jq -r '.[0].tag_name' | sed 's/^v//g')"
        - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
        - if [ "${TRAVIS_CPU_ARCH}" == "arm64" ]; then
-           docker push $DOCKER_USERNAME/docker-azcopy:latest-arm64 .
+           docker push $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY"-arm64 $DOCKER_USERNAME/docker-azcopy:latest-arm64 .
          else
-           docker push $DOCKER_USERNAME/docker-azcopy:latest .
+           docker push $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY" $DOCKER_USERNAME/docker-azcopy:latest .
          fi
