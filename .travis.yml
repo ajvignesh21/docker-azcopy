@@ -75,3 +75,12 @@ jobs:
         - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$TRAVIS_COMMIT-arm64 .
       after_success:
         - docker run --rm docker-azcopy:$TRAVIS_COMMIT-arm64 azcopy --version
+deploy:
+  provider: <provider>
+  # ⋮
+  on:
+    tags: true
+  script:
+       - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+       - docker push $DOCKER_USERNAME/docker-azcopy:$TRAVIS_COMMIT-amd64 .
+       - docker push $DOCKER_USERNAME/docker-azcopy:$TRAVIS_COMMIT-arm64 .
