@@ -41,6 +41,25 @@ jobs:
         - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:latest .
       after_success:
         - docker run --rm $DOCKER_USERNAME/docker-azcopy:latest azcopy --version
+
+    - stage: Static test-arm1
+      env:
+        - Test: hadolint
+      language: minimal
+      script:
+        - docker run --rm -i -v $PWD/.hadolint.yml:/.hadolint.yml hadolint/hadolint < Dockerfile
+
+    - stage: Static test-arm2
+      env:
+        - Test: dockerfile_lint
+      language: node_js
+      node_js:
+        - "12"
+      script:
+        - npx --cache .npx dockerfile_lint
+      cache:
+        directories:
+          - .npx
         
     - stage: Build test-arm64
       arch: arm64
