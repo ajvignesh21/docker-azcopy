@@ -30,61 +30,13 @@ jobs:
         directories:
           - .npx
 
-    - stage: Build test-amd64
-      arch: amd64
+    - stage: Build test
       language: minimal
       before_script:
         - LATEST_AZCOPY="$(curl -sLo- https://api.github.com/repos/Azure/azure-storage-azcopy/releases | jq -r '.[0].tag_name' | sed 's/^v//g')"
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:latest .
+        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$TRAVIS_COMMIT .
       after_success:
-        - docker run --rm $DOCKER_USERNAME/docker-azcopy:latest azcopy --version
-
-    - stage: Static test-arm1
-      env:
-        - Test: hadolint
-      language: minimal
-      script:
-        - docker run --rm -i -v $PWD/.hadolint.yml:/.hadolint.yml hadolint/hadolint < Dockerfile
-
-    - stage: Static test-arm2
-      env:
-        - Test: dockerfile_lint
-      language: node_js
-      node_js:
-        - "12"
-      script:
-        - npx --cache .npx dockerfile_lint
-      cache:
-        directories:
-          - .npx
-        
-    - stage: Build test-arm64
-      arch: arm64
-      language: minimal
-      before_script:
-        - sudo apt-get update
-        - sudo apt-get install libonig5
-        - sudo apt-get install jq
-        - LATEST_AZCOPY="$(curl -sLo- https://api.github.com/repos/Azure/azure-storage-azcopy/releases | jq -r '.[0].tag_name' | sed 's/^v//g')"
-        - test -n "$LATEST_AZCOPY"
-        - export LATEST_AZCOPY
-      script:
-        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY"-arm64 -t $DOCKER_USERNAME/docker-azcopy:latest-arm64 .
-      after_success:
-        - docker run --rm $DOCKER_USERNAME/docker-azcopy:latest-arm64 azcopy --version
-deploy:
-  provider: <provider>
-  # ⋮
-  on:
-    tags: true
-  script:
-       - export LATEST_AZCOPY="$(curl -sLo- https://api.github.com/repos/Azure/azure-storage-azcopy/releases | jq -r '.[0].tag_name' | sed 's/^v//g')"
-       - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
-       - if [ "${TRAVIS_CPU_ARCH}" == "arm64" ]; then
-           docker push $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY"-arm64 $DOCKER_USERNAME/docker-azcopy:latest-arm64 .
-         else
-           docker push $DOCKER_USERNAME/docker-azcopy:"$LATEST_AZCOPY" $DOCKER_USERNAME/docker-azcopy:latest .
-         fi
+        - docker run --rm docker-azcopy:$TRAVIS_COMMIT azcopy --version
