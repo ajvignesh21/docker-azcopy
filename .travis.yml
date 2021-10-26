@@ -37,9 +37,4 @@ jobs:
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-        - docker buildx create --name mybuilder
-        - docker buildx use
-        - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
-        - travis_wait 30 docker buildx build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:$LATEST_AZCOPY -t $DOCKER_USERNAME/docker-azcopy:latest --platform linux/amd64,linux/arm64 --push .
-        - docker buildx rm mybuilder
+        - docker --version 
