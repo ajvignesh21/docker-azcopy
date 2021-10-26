@@ -37,4 +37,5 @@ jobs:
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - docker --version 
+        - docker --version
+        - docker buildx create --name sample
