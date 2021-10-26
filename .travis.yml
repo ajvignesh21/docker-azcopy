@@ -38,4 +38,4 @@ jobs:
         - export LATEST_AZCOPY
       script:
         - docker --version
-        - docker buildx create --name sample
+        - docker buildx create --use --name mybuilder
