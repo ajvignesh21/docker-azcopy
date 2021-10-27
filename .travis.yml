@@ -17,9 +17,7 @@ jobs:
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - tag1=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -1)
+        - tag1=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | head -1)
         - echo $tag1
-        - tag2=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | head -1)
+        - tag2=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | head -2)
         - echo $tag2
-        - tag3=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -3)
-        - echo $tag3
