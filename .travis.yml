@@ -37,10 +37,4 @@ jobs:
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - $LATEST_AZCOPY
-        - readarray -d : -t strarr <<< "$LATEST_AZCOPY"
-        - for (( n=0; n < ${#strarr[*]}; n++))
-          do
-          echo "${strarr[n]}"
-          done
-        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$strarr[0] -t docker-azcopy:$strarr[1] .
+        - package=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -1)
