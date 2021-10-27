@@ -19,4 +19,6 @@ jobs:
       script:
         - IN="$LATEST_AZVOPY"
         - tag=(`echo $IN | tr '.' ' '`) 
-        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:${tag[0]}.${tag[1]}  -t docker-azcopy:${tag[0]} .
+        - tag1 = ${tag[0]}.${tag[1]}
+        - tag2 = ${tag[0]}
+        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$tag1 -t docker-azcopy:$tag2 .
