@@ -46,9 +46,9 @@ jobs:
           docker run --rm --privileged multiarch/qemu-user-static --reset -p yes;
           docker buildx create --use --name mybuilder;
           docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD};
-          travis_wait 30 docker buildx build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:${tag[0]}.${tag[1]} -t $DOCKER_USERNAME/docker-azcopy:${tag[0]} -t $DOCKER_USERNAME/docker-azcopy:latest --platform linux/amd64,linux/arm64 --push .;
+          travis_wait 30 docker buildx build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t $DOCKER_USERNAME/docker-azcopy:$LATEST_AZCOPY -t $DOCKER_USERNAME/docker-azcopy:${tag[0]}.${tag[1]} -t $DOCKER_USERNAME/docker-azcopy:${tag[0]} -t $DOCKER_USERNAME/docker-azcopy:latest --platform linux/amd64,linux/arm64 --push .;
           docker buildx rm mybuilder;
           else
-          docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:${tag[0]}.${tag[1]} .;
+          docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$TRAVIS_COMMIT .;
           docker run --rm docker-azcopy:$TRAVIS_COMMIT azcopy --version;
           fi
