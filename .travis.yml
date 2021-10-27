@@ -37,5 +37,9 @@ jobs:
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - package=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -1)
-        - echo $package
+        - tag1=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -1)
+        - echo $tag1
+        - tag2=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -2)
+        - echo $tag2
+        - tag3=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -3)
+        - echo $tag3
