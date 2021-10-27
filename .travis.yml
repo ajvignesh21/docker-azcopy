@@ -16,10 +16,8 @@ jobs:
         - LATEST_AZCOPY="$(curl -sLo- https://api.github.com/repos/Azure/azure-storage-azcopy/releases | jq -r '.[0].tag_name' | sed 's/^v//g')"
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
-      script:
-        - tag1=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | head -1)
-        - echo $tag1
-        - tag2=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | head -2)
-        - echo $tag2
-        - cat $tag2 | sed -e 's/\s/./g' > newtag2
-        - echo $newtag2
+      script: 
+        - IN="$LATEST_AZCOPY"
+        - arr=(`echo $IN | tr '.' ' '`)
+        - echo ${arr[0]}
+        - echo ${arr[0]}.${arr[1]}
