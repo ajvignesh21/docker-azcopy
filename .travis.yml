@@ -38,4 +38,4 @@ jobs:
         - export LATEST_AZCOPY
       script:
         - package=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -1)
-        - echo package
+        - echo $package
