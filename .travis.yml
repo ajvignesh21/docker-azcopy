@@ -39,7 +39,5 @@ jobs:
       script:
         - tag1=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -1)
         - echo $tag1
-        - tag2=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -2)
+        - tag2=$(echo "$tag1" | tr '.' '\n' | tail -1)
         - echo $tag2
-        - tag3=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | tail -3)
-        - echo $tag3
