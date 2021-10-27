@@ -17,7 +17,7 @@ jobs:
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
       script:
-        - IN="$LATEST_AZVOPY"
+        - IN="$LATEST_AZCOPY"
         - tag=(`echo $IN | tr '.' ' '`) 
         - tag1 = echo ${tag[0]}.${tag[1]}
         - tag2 = echo ${tag[0]}
