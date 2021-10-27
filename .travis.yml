@@ -19,5 +19,5 @@ jobs:
       script:
         - tag1=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | head -1)
         - echo $tag1
-        - tag2=$(echo "$LATEST_AZCOPY" | tr '.' '\n' | head -2)
+        - tag2=$(echo "$LATEST_AZCOPY" | tr '.'  | head -2)
         - echo $tag2
