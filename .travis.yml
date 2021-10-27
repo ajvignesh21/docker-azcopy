@@ -7,39 +7,16 @@ services:
 
 stages:
   - Static test
-  - Build test
 
 jobs:
   include:
-    - stage: Static test
-      env:
-        - Test: hadolint
-      language: minimal
-      script:
-        - docker run --rm -i -v $PWD/.hadolint.yml:/.hadolint.yml hadolint/hadolint < Dockerfile
-
-    - stage: Static test
-      env:
-        - Test: dockerfile_lint
-      language: node_js
-      node_js:
-        - "12"
-      script:
-        - npx --cache .npx dockerfile_lint
-      cache:
-        directories:
-          - .npx
-
     - stage: Build test
       language: minimal
       before_script:
         - LATEST_AZCOPY="$(curl -sSLo- https://api.github.com/repos/Azure/azure-storage-azcopy/releases | jq -r '.[0].tag_name' | sed 's/^v//g')"
         - test -n "$LATEST_AZCOPY"
         - export LATEST_AZCOPY
-        - IN="$LATEST_AZCOPY"
-        - arr=(`echo $IN | tr '.' ' '`)
-        - tag1 =${arr[0]}
-        - tag2 =${arr[0]}.${arr[1]}
       script:
-          docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:$tag1 -t docker-azcopy:$tag2 .;
-          docker run --rm docker-azcopy:$tag2 azcopy --version;
+        - IN="$LATEST_AZVOPY"
+        - tag=(`echo $IN | tr '.' ' '`) 
+        - docker build --build-arg AZCOPY_VERSION="$LATEST_AZCOPY" -t docker-azcopy:${tag[0]}.${tag[1]}  -t docker-azcopy:${tag[0]} .
